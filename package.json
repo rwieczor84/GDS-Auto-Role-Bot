@@ -1,0 +1,16 @@
+{
+  "name": "grim-auto-role-bot",
+  "version": "1.0.0",
+  "description": "Auto role bot for Discord",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.0.0",
+    "dotenv": "^17.2.1"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}

@@ -14,7 +14,7 @@ const CONFIG = {
     LOG_CHANNEL_ID: '1403761907025973439', // 🤖🔢-bot-logi
 
     // Ogólny kanał do powiadomień:     NOTIFICATION_CHANNEL_ID: '1280644742635458570', // 🤖-boty-bots
-    NOTIFICATION_CHANNEL_ID: '1280644742635458570', // 🤖-boty-bots
+    NOTIFICATION_CHANNEL_ID: '1403761907025973439', // 🤖-boty-bots
 
     // ID serwera
     GUILD_ID: '1279058196765605951',
@@ -39,7 +39,7 @@ const CONFIG = {
     ],
 
     // Konfiguracja wiadomości powitalnej
-    WELCOME_CHANNEL_ID: '1279430165113344094', // ID: '1279430165113344094' 🔤-powitalny-welcome. Zmieniono z kanału logów.
+    WELCOME_CHANNEL_ID: '1403761907025973439', // ID: '1279430165113344094' 🔤-powitalny-welcome. Zmieniono z kanału logów.
     WELCOME_MESSAGES: [
 
 // ============================ Polski (priorytet) =========
@@ -432,3 +432,4 @@ client.login(CONFIG.TOKEN).catch(error => {
     console.log('💡 Sprawdź czy token jest prawidłowy i bot ma odpowiednie uprawnienia');
 
 });
+

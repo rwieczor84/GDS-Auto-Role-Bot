@@ -279,6 +279,61 @@ async function sendWelcomeMessage(member) {
     }
 }
 
+// =================================================================================
+// FUNKCJA DO JEDNORAZOWEGO DODANIA ROLI WELCOME (DO USUNIĘCIA PO UŻYCIU)
+// =================================================================================
+async function addWelcomeRoleToAllMembers() {
+    console.log('🚀 Rozpoczynam jednorazowe dodawanie roli Welcome...');
+    
+    try {
+        const guild = client.guilds.cache.get(CONFIG.GUILD_ID);
+        if (!guild) {
+            console.log('❌ Nie znaleziono serwera!');
+            return;
+        }
+
+        const WELCOME_ROLE_ID = '1404857724470034563';
+        const welcomeRole = guild.roles.cache.get(WELCOME_ROLE_ID);
+        
+        if (!welcomeRole) {
+            console.log('❌ Nie znaleziono roli Welcome!');
+            return;
+        }
+
+        console.log(`📋 Pobieram wszystkich członków serwera ${guild.name}...`);
+        const members = await guild.members.fetch();
+        
+        let addedCount = 0;
+        let totalCount = 0;
+        
+        for (const [memberId, member] of members) {
+            // Pomijamy boty
+            if (member.user.bot) continue;
+            
+            totalCount++;
+            
+            // Sprawdzamy czy użytkownik już ma rolę Welcome
+            if (!member.roles.cache.has(WELCOME_ROLE_ID)) {
+                try {
+                    await member.roles.add(WELCOME_ROLE_ID);
+                    addedCount++;
+                    console.log(`✅ Dodano rolę Welcome dla: ${member.user.tag}`);
+                    
+                    // Małe opóźnienie żeby nie przeciążyć API Discord
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                } catch (error) {
+                    console.error(`❌ Błąd przy dodawaniu roli dla ${member.user.tag}:`, error);
+                }
+            }
+        }
+        
+        console.log(`🎉 Zakończono! Dodano rolę Welcome dla ${addedCount} z ${totalCount} użytkowników.`);
+        
+    } catch (error) {
+        console.error('❌ Błąd podczas dodawania ról Welcome:', error);
+    }
+}
 
 // =================================================================================
 // EVENTY BOTA (ZDARZENIA)
@@ -356,6 +411,18 @@ client.on('guildMemberAdd', (member) => {
 client.on('error', error => console.error('❌ Błąd bota:', error));
 process.on('unhandledRejection', error => console.error('❌ Nieobsłużony błąd:', error));
 
+// KOMENDA DODANIA ROLI WELCOME (można wywołać pisząc w dowolnym kanale: !addwelcome)
+client.on('messageCreate', async (message) => {
+    // Tylko dla administratorów i tylko na właściwym serwerze
+    if (message.content === '!addwelcome' && 
+        message.guild.id === CONFIG.GUILD_ID && 
+        message.member.permissions.has('ADMINISTRATOR')) {
+        
+        await message.reply('🚀 Rozpoczynam dodawanie roli Welcome...');
+        await addWelcomeRoleToAllMembers();
+        await message.reply('✅ Zakończono dodawanie roli Welcome!');
+    }
+});
 
 // =================================================================================
 // URUCHOMIENIE BOTA
@@ -363,4 +430,5 @@ process.on('unhandledRejection', error => console.error('❌ Nieobsłużony bł�
 client.login(CONFIG.TOKEN).catch(error => {
     console.error('❌ Nie udało się uruchomić bota:', error);
     console.log('💡 Sprawdź czy token jest prawidłowy i bot ma odpowiednie uprawnienia');
+
 });
